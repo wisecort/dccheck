@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dccheck-config
+  labels:
+    app: dccheck-backend
+data:
+  ACCESS_TOKEN_MINUTES: "60"
+  REFRESH_TOKEN_DAYS: "7"
+  STORAGE_PATH: "/app/storage/fotos"
+  ALLOWED_ORIGINS: "http://dccheck.smart.intranet"
+  SMTP_PORT: "587"
+  RESET_TOKEN_MINUTES: "30"

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dccheck-frontend
+  labels:
+    app: dccheck-frontend
+spec:
+  selector:
+    app: dccheck-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP

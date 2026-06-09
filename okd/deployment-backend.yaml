@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dccheck-backend
+  labels:
+    app: dccheck-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dccheck-backend
+  template:
+    metadata:
+      labels:
+        app: dccheck-backend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: backend
+          image: registry.intranet/dccheck/backend:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: dccheck-secrets
+            - configMapRef:
+                name: dccheck-config
+          volumeMounts:
+            - name: fotos-storage
+              mountPath: /app/storage/fotos
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: fotos-storage
+          persistentVolumeClaim:
+            claimName: dccheck-fotos-pvc
